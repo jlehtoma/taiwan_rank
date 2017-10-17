@@ -1,6 +1,9 @@
 library(tidyverse)
 library(hrbrthemes)
 
+
+# Helper functions --------------------------------------------------------
+
 plot_ranks <- function(dat) {
   p <- ggplot(dat, aes(x = year, y = rank, group = university)) +
     geom_point() + geom_line() +
@@ -35,15 +38,13 @@ plot_ranks_mass <- function(dat, highlight = NULL) {
   return(p)
 }
 
+# Process data ------------------------------------------------------------
+
 # Read data
 rank_data <- readr::read_csv("data/taiwan_ranks.csv", na = "-")
  
 hel_rank_data <- rank_data %>% 
   dplyr::filter(university == "University of Helsinki")
-lun_rank_data <- rank_data %>% 
-  dplyr::filter(university == "Lund University")
-kar_rank_data <- rank_data %>% 
-  dplyr::filter(university == "University of Edinburgh")
 
 mid_range_unis_2007 <- rank_data %>% 
   dplyr::filter(rank >= 42 & rank < 62 & year == 2007) %>% 
@@ -52,11 +53,10 @@ mid_range_unis_2007 <- rank_data %>%
 mid_range_data <- rank_data %>% 
   dplyr::filter(university %in% mid_range_unis_2007$university)
 
-# Plot data
+
+# Plot data ---------------------------------------------------------------
 
 p_hel <- plot_ranks(hel_rank_data)
-p_lund <- plot_ranks(lun_rank_data)
-p_kar <- plot_ranks(kar_rank_data)
 p_mid <- plot_ranks_mass(mid_range_data, highlight = "University of Helsinki")
 
 ggsave("taiwan_rank_uni_hel.png", p_mid)
